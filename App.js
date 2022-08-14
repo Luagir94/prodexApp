@@ -1,80 +1,61 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableHighlight, FlatList,StatusBar,Platform, KeyboardAvoidingView} from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react'
+import { StyleSheet, Text, View, TextInput, TouchableHighlight, FlatList, StatusBar, Platform, KeyboardAvoidingView } from 'react-native';
+import {
+  useFonts, PTSans_400Regular,
+  PTSans_400Regular_Italic,
+  PTSans_700Bold,
+  PTSans_700Bold_Italic
+} from '@expo-google-fonts/pt-sans';
+import { AuthProvider } from './src/context/authContext';
+import Router from './src/configs/router';
+import stylesConstants from './src/configs/constants/stylesConstants';
+import * as SplashScreen from 'expo-splash-screen';
+import * as Font from 'expo-font';
 
 export default function App() {
-  const [list, setList] = useState([])
-  const [itemToAdd, setItemToAdd] = useState('')
-
+  const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
-    console.log(list);
-  }, [list])
-
-  const addItem = (item) => {
-    if (item.length) {
-      const id = Math.round(Math.random() * 10000)
-      setList([...list, { name: item, id }])
-      setItemToAdd('')
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync()
+        await Font.loadAsync({
+          PTSans_400Regular,
+          PTSans_400Regular_Italic,
+          PTSans_700Bold_Italic,
+          PTSans_700Bold
+        });
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setAppIsReady(true);
+      }
     }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
   }
-  const deleteItem = (id) => {
-    setList(list.filter((x) => x.id !== id))
-
-  }
-
-  const Item = ({ item }) => (
-
-    <View style={styles.item}>
-      <Text>{item.name}</Text>
-      <TouchableHighlight
-        activeOpacity={0.6}
-        style={styles.item.button}
-        underlayColor="#DDDDDD"
-        onPress={() => deleteItem(item.id)}>
-        <Text style={styles.button.text}>-</Text>
-      </TouchableHighlight>
-    </View>
-  );
-  return (
-    <KeyboardAvoidingView
-    behavior={Platform.OS === "ios" ? "padding" : null}
-    style={styles.container}
+  return <View  
+  onLayout={onLayoutRootView}
+  style={{width: '100%', height: '100%', backgroundColor: stylesConstants.colors.green}}
   >
-    <View  style={styles.container}>
-      
-      <View style={styles.inputContainer} >
-        <Text style={styles.inputContainer.text} >Introduce un nuevo Item</Text>
-        <View style={styles.inputField}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setItemToAdd}
-            value={itemToAdd}
-          />
-          <TouchableHighlight
-            activeOpacity={0.6}
-            style={styles.button}
-            underlayColor="#DDDDDD"
-            onPress={() => addItem(itemToAdd)}>
-            <Text style={styles.button.text}>+</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-
-      <View style={styles.listItem} >
-    
-        
-         <FlatList
-          data={list}
-          renderItem={Item}
-          keyExtractor={item => item.id}
-        /> 
-
-      </View>
+  <AuthProvider>
+    <Router />
+  </AuthProvider>
+  </View>
 
 
-    </View>
-    </KeyboardAvoidingView>
-  );
+
 }
 
 const styles = StyleSheet.create({
@@ -86,7 +67,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     alignItems: 'stretch',
- 
+
   },
   inputContainer: {
     flex: 0,
@@ -138,9 +119,9 @@ const styles = StyleSheet.create({
     height: 100,
     overflow: 'hidden',
     marginTop: 2000,
-    
+
   },
-   listItem: {
+  listItem: {
     height: 200,
     width: '75%',
     marginTop: 20,
@@ -166,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginBottom: 20,
-    button:{
+    button: {
       height: 40,
       margin: 12,
       borderWidth: 1,
