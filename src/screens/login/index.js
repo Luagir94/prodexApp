@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { StyleSheet, Text, View, TouchableHighlight, ImageBackground , StatusBar, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ImageBackground, StatusBar, Platform, ActivityIndicator } from 'react-native';
 import InputComponent from '../../components/inputComponent';
 import stylesConstants from '../../configs/constants/stylesConstants';
 import MainButton from '../../components/buttons/mainButton';
@@ -9,23 +9,23 @@ import ModalComponent from '../../components/modalComponent';
 import AuthContext from '../../context/authContext'
 const LoginScreen = ({ navigation }) => {
   const [registerForm, setRegisterForm] = useState({
-    email: '',
+    userName: '',
     password: '',
   })
-  const {setAuthToken,setIsLogged} = useContext(AuthContext)
+  const { setAuthToken, setIsLogged } = useContext(AuthContext)
   const { response, error, loading, postData, resetHook } = usePost('api/auth/login', registerForm)
   const [modalVisible, setModalVisible] = useState(false)
   useEffect(() => {
     error && setModalVisible(true)
-    }, [error])
-    
-    useEffect(() => {
-   if (response) {
-    setAuthToken(response)
-    setIsLogged(true)
-   }
-    }, [response])
-    
+  }, [error])
+
+  useEffect(() => {
+    if (response) {
+      setAuthToken(response)
+      setIsLogged(true)
+    }
+  }, [response])
+
   const handleModal = () => {
     setModalVisible(!modalVisible)
     resetHook()
@@ -33,30 +33,30 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View
       style={styles.container}>
-        <ModalComponent text={error} isVisible={modalVisible} handleModal={handleModal} />
-         <ImageBackground source={bg} resizeMode="cover" style={styles.image}>
-          <View style={styles.titleContainer}>
+      <ModalComponent text={error} isVisible={modalVisible} handleModal={handleModal} />
+      <ImageBackground source={bg} resizeMode="cover" style={styles.image}>
+        <View style={styles.titleContainer}>
           <Text
-        style={styles.title}
-        >LOGIN</Text>
-        <Text
-        style={styles.subTitle}
-        >Bienvenido de nuevo!</Text>
-          </View>
-      
-      <View
-        style={styles.inputsContainer}
-      >
-   <InputComponent label="Email" name='email' value={registerForm.email} onChange={setRegisterForm} form={registerForm} condition={{ status: true }} />
-        <InputComponent label="Password" name='password' value={registerForm.password} onChange={setRegisterForm} form={registerForm} condition={{ status: true }} />
+            style={styles.title}
+          >LOGIN</Text>
+          <Text
+            style={styles.subTitle}
+          >Bienvenido de nuevo!</Text>
+        </View>
 
-      </View>
-      <View
-        style={styles.buttonContainer}>
-           {loading ?  <ActivityIndicator size="large" color="#DBD3D8" /> :<MainButton text={'LOGIN'} onPress={postData} />}
-        <MainButton text={'VOLVER ATRAS'} onPress={() => navigation.navigate('Home')} />
-       
-      </View>
+        <View
+          style={styles.inputsContainer}
+        >
+          <InputComponent label="Usuario" name='userName' value={registerForm.userName} onChange={setRegisterForm} form={registerForm} />
+          <InputComponent label="Password" name='password' value={registerForm.password} onChange={setRegisterForm} form={registerForm} />
+
+        </View>
+        <View
+          style={styles.buttonContainer}>
+          {loading ? <ActivityIndicator size="large" color="#DBD3D8" /> : <MainButton text={'LOGIN'} onPress={postData} />}
+          <MainButton text={'VOLVER ATRAS'} onPress={() => navigation.navigate('Home')} />
+
+        </View>
       </ImageBackground>
     </View>
   )

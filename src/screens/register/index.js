@@ -10,6 +10,7 @@ const RegisterScreen = ({ navigation }) => {
   const [registerForm, setRegisterForm] = useState({
     name: '',
     lastName: '',
+    userName: '',
     email: '',
     password: '',
   })
@@ -53,6 +54,7 @@ const handleModal = () => {
       >
         <InputComponent label="Nombre" name='name' value={registerForm.name} onChange={setRegisterForm} form={registerForm}  />
         <InputComponent label="Apellido" name='lastName' value={registerForm.lastName} onChange={setRegisterForm} form={registerForm}  />
+        <InputComponent label="Email" name='userName' value={registerForm.userName} onChange={setRegisterForm} form={registerForm}  />
         <InputComponent label="Email" name='email' value={registerForm.email} onChange={setRegisterForm} form={registerForm}  />
         <InputComponent label="Password" name='password' value={registerForm.password} onChange={setRegisterForm} form={registerForm}  />
 
