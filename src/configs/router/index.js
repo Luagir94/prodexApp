@@ -28,7 +28,7 @@ const Router = () => {
 
     } else {
         return <NavigationContainer>
-                 <Stack.Navigator><Tab.Screen name="Dashboard" component={DashboardScreen}  /></Stack.Navigator>
+                 <Stack.Navigator><Stack.Screen name="Dashboard" component={DashboardScreen}  /></Stack.Navigator>
             
         </NavigationContainer>
     }
